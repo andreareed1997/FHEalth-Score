@@ -42,6 +42,3 @@ coverage.json
 # Logs
 *.log
 npm-debug.log*
-
-# Cursor rules (local only)
-.cursor/
