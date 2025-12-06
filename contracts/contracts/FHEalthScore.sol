@@ -68,7 +68,7 @@ contract FHEalthScore is ZamaEthereumConfig {
         euint8 glucose = FHE.fromExternal(encGlucose, inputProof);
         euint8 activity = FHE.fromExternal(encActivity, inputProof);
         euint8 smoking = FHE.fromExternal(encSmoking, inputProof);
-        
+
         // Store factors
         ageGrade[msg.sender] = age;
         bmiGrade[msg.sender] = bmi;
@@ -95,7 +95,7 @@ contract FHEalthScore is ZamaEthereumConfig {
         
         totalScore[msg.sender] = total;
         _allowFactor(total);
-        
+
         // Calculate risk level
         euint8 level = _calculateRiskLevel(total);
         riskLevel[msg.sender] = level;
@@ -164,7 +164,7 @@ contract FHEalthScore is ZamaEthereumConfig {
     function getSmokingGrade() external view returns (euint8) {
         return smokingGrade[msg.sender];
     }
-    
+
     function getTotalScore() external view returns (euint8) {
         require(timestamps[msg.sender] > 0, "No assessment");
         return totalScore[msg.sender];

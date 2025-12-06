@@ -70,19 +70,19 @@ export default function Home() {
   const { data: walletClient } = useWalletClient();
   const { writeContractAsync } = useWriteContract();
 
-  // Initialize FHEVM only after wallet connected on correct chain
+  // Initialize FHEVM on page load
   useEffect(() => {
-    if (account.status === "connected" && chainId === CHAIN_ID) {
-      setFheStatus("checking");
-      checkFhevm().then((ok) => setFheStatus(ok ? "ready" : "error"));
-    } else if (account.status === "disconnected") {
-      resetFhevm();
-      setFheStatus("checking");
+    checkFhevm().then((ok) => setFheStatus(ok ? "ready" : "error"));
+  }, []);
+
+  // Reset on wallet disconnect
+  useEffect(() => {
+    if (account.status === "disconnected") {
       setScore(null);
       setRiskLevel(null);
       setSteps((prev) => prev.map((s) => ({ ...s, state: "idle" })));
     }
-  }, [account.status, chainId]);
+  }, [account.status]);
 
   // Auto switch to Sepolia
   useEffect(() => {

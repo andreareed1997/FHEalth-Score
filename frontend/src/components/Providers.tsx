@@ -24,6 +24,7 @@ export function Providers({ children }: { children: ReactNode }) {
             fontStack: "system",
           })}
           modalSize="compact"
+          locale="en"
         >
           <ChakraProvider theme={theme}>
             {children}

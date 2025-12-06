@@ -103,12 +103,9 @@ export async function initFhevm() {
 
   await initSDK();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const network = (window as any).ethereum ?? SepoliaConfig.network;
-
+  // Use SDK's default Sepolia network - don't rely on wallet being connected
   instance = await createInstance({
     ...SepoliaConfig,
-    network,
   });
 
   return instance;
