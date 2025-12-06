@@ -1,8 +1,5 @@
 "use client";
 
-// Must be imported first to polyfill globals
-import "@/lib/polyfills";
-
 import { ChakraProvider } from "@chakra-ui/react";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

@@ -17,12 +17,15 @@ const nextConfig = {
         assert: false,
         os: false,
         path: false,
-        globalThis: false,
       };
 
       config.plugins.push(
         new webpack.ProvidePlugin({
-          global: ["globalthis", "default"],
+          process: "process/browser",
+          Buffer: ["buffer", "Buffer"],
+        }),
+        new webpack.DefinePlugin({
+          "process.env": JSON.stringify({}),
         })
       );
 
