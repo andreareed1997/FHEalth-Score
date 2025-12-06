@@ -47,14 +47,15 @@ export default function Home() {
   const [fheStatus, setFheStatus] = useState<"checking" | "ready" | "error">(
     "checking"
   );
-  const [inputs, setInputs] = useState<AssessmentInput>({
-    age: 38,
-    bmi: 22,
-    systolic: 110,
-    glucose: 90,
-    activity: 4,
-    smoking: 0,
-  });
+  const initialInputs: AssessmentInput = {
+    age: -1,
+    bmi: -1,
+    systolic: -1,
+    glucose: -1,
+    activity: -1,
+    smoking: -1,
+  };
+  const [inputs, setInputs] = useState<AssessmentInput>(initialInputs);
   const [steps, setSteps] = useState<{ label: string; state: StepState }[]>([
     { label: "Encrypt 6 factors", state: "idle" },
     { label: "FHE on-chain compute", state: "idle" },
@@ -95,6 +96,14 @@ export default function Home() {
     index: number,
     state: "idle" | "running" | "done" | "error"
   ) => setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, state } : s)));
+
+  const handleReset = () => {
+    setInputs(initialInputs);
+    setScore(null);
+    setRiskLevel(null);
+    setSteps((prev) => prev.map((s) => ({ ...s, state: "idle" })));
+    resetFhevm();
+  };
 
   const handleSubmit = async () => {
     if (!account.address) {
@@ -335,6 +344,7 @@ export default function Home() {
               values={inputs}
               onChange={setInputs}
               onSubmit={handleSubmit}
+              onReset={handleReset}
               isSubmitting={isSubmitting}
               isDisabled={!account.address}
             />

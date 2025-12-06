@@ -3,17 +3,20 @@
 import {
   Box,
   Button,
+  HStack,
   Select,
   SimpleGrid,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { RepeatIcon } from "@chakra-ui/icons";
 import type { AssessmentInput } from "@/lib/fhevm";
 
 type Props = {
   values: AssessmentInput;
   onChange: (values: AssessmentInput) => void;
   onSubmit: () => Promise<void>;
+  onReset: () => void;
   isSubmitting: boolean;
   isDisabled?: boolean;
 };
@@ -59,10 +62,18 @@ const SMOKING_OPTIONS = [
   { label: "Current", value: 2 },
 ];
 
-export function RiskForm({ values, onChange, onSubmit, isSubmitting, isDisabled }: Props) {
+export function RiskForm({ values, onChange, onSubmit, onReset, isSubmitting, isDisabled }: Props) {
   const update = (key: keyof AssessmentInput, value: number) => {
     onChange({ ...values, [key]: value });
   };
+
+  const allSelected = 
+    values.age !== -1 && 
+    values.bmi !== -1 && 
+    values.systolic !== -1 && 
+    values.glucose !== -1 && 
+    values.activity !== -1 && 
+    values.smoking !== -1;
 
   return (
     <Box 
@@ -76,67 +87,86 @@ export function RiskForm({ values, onChange, onSubmit, isSubmitting, isDisabled 
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
         <RangeSelect
           label="Age Group"
+          placeholder="Select age"
           options={AGE_OPTIONS}
           value={values.age}
           onChange={(val) => update("age", val)}
         />
         <RangeSelect
           label="BMI Category"
+          placeholder="Select BMI"
           options={BMI_OPTIONS}
           value={values.bmi}
           onChange={(val) => update("bmi", val)}
         />
         <RangeSelect
           label="Blood Pressure"
+          placeholder="Select BP"
           options={SYSTOLIC_OPTIONS}
           value={values.systolic}
           onChange={(val) => update("systolic", val)}
         />
         <RangeSelect
           label="Glucose Level"
+          placeholder="Select glucose"
           options={GLUCOSE_OPTIONS}
           value={values.glucose}
           onChange={(val) => update("glucose", val)}
         />
         <RangeSelect
           label="Weekly Activity"
+          placeholder="Select activity"
           options={ACTIVITY_OPTIONS}
           value={values.activity}
           onChange={(val) => update("activity", val)}
         />
         <RangeSelect
           label="Smoking History"
+          placeholder="Select smoking"
           options={SMOKING_OPTIONS}
           value={values.smoking}
           onChange={(val) => update("smoking", val)}
         />
       </SimpleGrid>
 
-      <Button
-        w="full"
-        size="lg"
-        h={14}
-        fontSize="lg"
-        onClick={onSubmit}
-        isLoading={isSubmitting}
-        isDisabled={isDisabled}
-        loadingText="Processing Securely..."
-        variant="solid"
-        _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
-      >
-        {isDisabled ? "Connect Wallet to Submit" : "Submit Assessment"}
-      </Button>
+      <HStack spacing={4}>
+        <Button
+          flex={1}
+          size="lg"
+          h={14}
+          fontSize="lg"
+          onClick={onSubmit}
+          isLoading={isSubmitting}
+          isDisabled={isDisabled || !allSelected}
+          loadingText="Processing..."
+          variant="solid"
+          _disabled={{ opacity: 0.5, cursor: "not-allowed" }}
+        >
+          {isDisabled ? "Connect Wallet" : !allSelected ? "Select All Fields" : "Submit Assessment"}
+        </Button>
+        <Button
+          size="lg"
+          h={14}
+          variant="outline"
+          onClick={onReset}
+          isDisabled={isSubmitting}
+        >
+          <RepeatIcon />
+        </Button>
+      </HStack>
     </Box>
   );
 }
 
 function RangeSelect({
   label,
+  placeholder,
   options,
   value,
   onChange,
 }: {
   label: string;
+  placeholder: string;
   options: { label: string; value: number }[];
   value: number;
   onChange: (val: number) => void;
@@ -147,11 +177,12 @@ function RangeSelect({
         {label}
       </Text>
       <Select
-        value={value}
+        value={value === -1 ? "" : value}
         onChange={(e) => onChange(Number(e.target.value))}
         height={12}
         iconColor="brand.500"
         variant="filled"
+        placeholder={placeholder}
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value} style={{ background: "#1C2029" }}>
