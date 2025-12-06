@@ -37,7 +37,7 @@ import {
   resetFhevm,
 } from "@/lib/fhevm";
 import type { AssessmentInput } from "@/lib/fhevm";
-import { mapRisk } from "@/lib/risk";
+import { mapRiskLevel } from "@/lib/risk";
 import type { RiskLevel } from "@/lib/risk";
 
 const abi = abiJson.abi;
@@ -142,7 +142,7 @@ export default function Home() {
       updateStep(1, "done");
       updateStep(2, "running");
 
-      // Step 3: Decrypt risk level
+      // Step 3: Decrypt risk level (only one decrypt)
       const encryptedHandle = await readContract(wagmiConfig, {
         address: CONTRACT_ADDRESS,
         abi,
@@ -153,35 +153,20 @@ export default function Home() {
 
       if (!walletClient) throw new Error("Wallet client missing");
 
-      const clear = await decryptRiskLevel({
+      const riskLevelValue = await decryptRiskLevel({
         handle: encryptedHandle as bigint | `0x${string}`,
         contractAddress: CONTRACT_ADDRESS,
         userAddress,
         walletClient,
       });
 
-      const totalScoreHandle = await readContract(wagmiConfig, {
-        address: CONTRACT_ADDRESS,
-        abi,
-        functionName: "getTotalScore",
-        args: [],
-        account: userAddress,
-      });
-
-      const totalScore = await decryptRiskLevel({
-        handle: totalScoreHandle as bigint | `0x${string}`,
-        contractAddress: CONTRACT_ADDRESS,
-        userAddress,
-        walletClient,
-      });
-
-      setScore(totalScore);
-      setRiskLevel(mapRisk(totalScore));
+      setScore(riskLevelValue);
+      setRiskLevel(mapRiskLevel(riskLevelValue));
       updateStep(2, "done");
       
       toast({
         status: "success",
-        description: `Assessment completed! Risk Level: ${clear}`,
+        description: `Assessment completed!`,
       });
     } catch (err) {
       console.error(err);
