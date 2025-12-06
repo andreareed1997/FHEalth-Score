@@ -7,9 +7,9 @@ import {
   Tag,
   VStack,
   Text,
-  CircularProgress,
-  CircularProgressLabel,
+  Icon,
 } from "@chakra-ui/react";
+import { CheckCircleIcon, WarningIcon, InfoIcon } from "@chakra-ui/icons";
 import type { RiskLevel } from "@/lib/risk";
 
 type Props = {
@@ -17,74 +17,112 @@ type Props = {
   level: RiskLevel | null;
 };
 
+const LEVEL_ICONS = {
+  Low: CheckCircleIcon,
+  Guarded: InfoIcon,
+  Medium: InfoIcon,
+  High: WarningIcon,
+  Critical: WarningIcon,
+};
+
 export function ResultCard({ score, level }: Props) {
   if (score === null || level === null) return null;
 
-  // Max possible score is 17 (3+3+3+2+3+2+high activity penalty), show as percentage
-  const percentage = Math.min(100, Math.max(0, (score / 17) * 100));
+  const IconComponent = LEVEL_ICONS[level.label];
 
   return (
     <Box
       bg="bg.card"
       borderRadius="3xl"
       p={8}
-      border="1px solid"
+      border="2px solid"
       borderColor={level.color}
-      boxShadow={`0 0 40px ${level.color}20`}
+      boxShadow={`0 0 60px ${level.color}30`}
       position="relative"
       overflow="hidden"
     >
+      {/* Top gradient bar */}
       <Box
         position="absolute"
         top={0}
         left={0}
         right={0}
-        h="4px"
-        bg={level.color}
+        h="6px"
+        bgGradient={level.bgGradient}
       />
       
-      <VStack spacing={6} align="start">
-        <HStack justify="space-between" w="full">
+      <VStack spacing={5} align="stretch">
+        {/* Header */}
+        <HStack justify="space-between" align="center">
           <Heading size="md" color="whiteAlpha.900">
             Assessment Result
           </Heading>
           <Tag 
             size="lg" 
-            bg={`${level.color.split('.')[0]}.500`} 
+            bgGradient={level.bgGradient}
             color="white" 
             px={4} 
             py={2} 
             borderRadius="full"
+            fontWeight="bold"
           >
+            <Icon as={IconComponent} mr={2} />
             {level.label} Risk
           </Tag>
         </HStack>
 
-        <HStack spacing={8} align="center" w="full">
-          <CircularProgress 
-            value={percentage} 
-            size="120px" 
-            thickness="8px" 
-            color={level.color}
-            trackColor="whiteAlpha.100"
+        {/* Score Display */}
+        <HStack 
+          spacing={4} 
+          p={4} 
+          bg="whiteAlpha.50" 
+          borderRadius="xl"
+          border="1px solid"
+          borderColor="whiteAlpha.100"
+        >
+          <Box
+            w={16}
+            h={16}
+            borderRadius="full"
+            bgGradient={level.bgGradient}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
           >
-            <CircularProgressLabel fontSize="3xl" fontWeight="bold" color="white">
+            <Text fontSize="2xl" fontWeight="bold" color="white">
               {score}
-            </CircularProgressLabel>
-          </CircularProgress>
-
-          <VStack align="start" flex={1} spacing={1}>
-            <Text fontSize="sm" color="whiteAlpha.600" fontWeight="medium" letterSpacing="wide" textTransform="uppercase">
-              Health Score
             </Text>
-            <Text fontSize="lg" lineHeight="short">
-              Based on your encrypted inputs, your calculated risk score is <b>{score}</b>.
+          </Box>
+          <VStack align="start" spacing={0} flex={1}>
+            <Text fontSize="sm" color="whiteAlpha.600" fontWeight="medium" textTransform="uppercase">
+              Risk Level
             </Text>
-            <Text fontSize="xs" color="whiteAlpha.500" mt={2}>
-              🔒 Decrypted locally using your private key
+            <Text fontSize="xl" fontWeight="bold" color={level.color}>
+              {level.label}
             </Text>
           </VStack>
         </HStack>
+
+        {/* Health Advice */}
+        <Box 
+          p={4} 
+          bg="whiteAlpha.50" 
+          borderRadius="xl"
+          borderLeft="4px solid"
+          borderLeftColor={level.color}
+        >
+          <Text fontSize="sm" color="whiteAlpha.600" fontWeight="medium" mb={2} textTransform="uppercase">
+            Health Recommendation
+          </Text>
+          <Text fontSize="md" color="whiteAlpha.900" lineHeight="tall">
+            {level.advice}
+          </Text>
+        </Box>
+
+        {/* Footer */}
+        <Text fontSize="xs" color="whiteAlpha.500" textAlign="center">
+          🔒 Result decrypted locally using your private key
+        </Text>
       </VStack>
     </Box>
   );
