@@ -5,11 +5,11 @@ import { http } from "wagmi";
 
 export const wagmiConfig = getDefaultConfig({
   appName: APP_NAME,
-  projectId: "fhealth-score-demo", // WalletConnect project ID
+  projectId: "fhealth-score-demo",
   chains: [sepolia],
   transports: {
     [sepolia.id]: http(SEPOLIA_RPC),
   },
-  ssr: true,
+  ssr: false,
 });
 
