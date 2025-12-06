@@ -20,6 +20,8 @@ build/
 out/
 cache/
 artifacts/
+.next/
+frontend/.next/
 
 # IDE
 .idea/
