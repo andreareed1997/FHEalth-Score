@@ -1,16 +1,6 @@
 # FHEalth Score
 
-**Privacy-preserving health risk assessment using Fully Homomorphic Encryption.**
-
-Your health data is encrypted in-browser, computed on-chain using FHE, and only you can decrypt the results.
-
-## Why FHE?
-
-Health data is extremely sensitive. Traditional solutions require trusting a server with your plaintext data. With FHE:
-
-- **Zero plaintext exposure** — Data is encrypted before leaving your browser
-- **On-chain computation** — Risk scoring happens entirely on ciphertexts
-- **User-only decryption** — Only you can see your health assessment results
+FHEalth Score is a privacy-preserving health risk calculator powered by Fully Homomorphic Encryption. Your health data is encrypted in-browser, computed on-chain, and only you can decrypt the results—no server or blockchain ever sees your plaintext.
 
 ## Features
 
