@@ -65,23 +65,41 @@ npm test
 ```
   FHEalthScore
     Deployment
-      ✔ Should deploy successfully
-      ✔ Should have no assessment initially
+      ✔ Should deploy successfully with valid address
+      ✔ Should have no assessment for any user initially
       ✔ Should return 0 for assessment count initially
+      ✔ Should return 0 timestamp initially
     Access Control
       ✔ Should revert getRiskLevel when no assessment exists
       ✔ Should revert getTotalScore when no assessment exists
-      ✔ Should return 0 timestamp when no assessment exists
-    View Functions
-      ✔ Should return encrypted handles for factor getters
+      ✔ Should allow getAssessmentTimestamp even without assessment
+      ✔ Should allow hasAssessment check without assessment
+      ✔ Should allow assessmentCount check for any address
+    View Functions - Zero State
+      ✔ Should return zero handles for all factor getters
+      ✔ Should return different zero handles for different users
     Contract Interface
-      ✔ Should have correct function signatures
-      ✔ Should have all getter functions
-      ✔ Should emit AssessmentSubmitted event on interface
+      ✔ Should have submitAssessment with correct parameter count
+      ✔ Should have correct parameter types for submitAssessment
+      ✔ Should have all 6 factor getter functions
+      ✔ Should have result getter functions
+      ✔ Should have utility functions
+      ✔ Should have AssessmentSubmitted event with correct parameters
     State Isolation
-      ✔ Should isolate state between users
+      ✔ Should isolate hasAssessment between users
+      ✔ Should isolate assessmentCount between users
+      ✔ Should isolate timestamps between users
+      ✔ Should isolate factor getters between users
+    Gas Estimation
+      ✔ Should estimate reasonable gas for view functions
+    Edge Cases
+      ✔ Should handle zero address in assessmentCount
+      ✔ Should allow multiple users to check their status independently
+      ✔ Should maintain consistent state across multiple calls
+    Contract Inheritance
+      ✔ Should inherit from ZamaEthereumConfig
 
-  11 passing (90ms)
+  26 passing (178ms)
 ```
 
 ## How It Works
